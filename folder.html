@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<style>
+			body {
+				font-family: monospace;
+			}
+
+			table {
+				border-collapse: collapse;
+			}
+
+			table td, table th {
+				text-align: left;
+				padding: .4em .6em;
+				border: .1em solid #ccc;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>
+			{{ .Path }}
+		</h1>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Filename</th>
+					<th>Size</th>
+					<th>Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{ if ne .Path "/" }}
+				<tr>
+					<td colspan="3">
+						<a href="{{ .Path | dir }}">..</a>
+					</td>
+				</tr>
+				{{ end }}
+
+				{{ range .Entries | sortEntries }}
+				<tr>
+					<td>
+						<a href="{{ .Name | join $.Path }}">{{ . | fmtFilename }}</a>
+					</td>
+					<td>{{ .Size | fmtBytes }}</td>
+					<td>{{ .ModTime | fmtTime }}</td>
+				</tr>
+				{{ end }}
+			</tbody>
+		</table>
+	</body>
+</html>

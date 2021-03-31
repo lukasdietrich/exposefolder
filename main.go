@@ -29,6 +29,6 @@ func startServer(opts options) error {
 	handler := makeHandler(opts.foldername)
 	addr := fmt.Sprintf(":%d", opts.port)
 
-	log.Printf("service %q on %q", opts.foldername, addr)
+	log.Printf("serving %q on %q", opts.foldername, addr)
 	return http.ListenAndServe(addr, handler)
 }

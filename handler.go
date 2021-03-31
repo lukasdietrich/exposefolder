@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"log"
 	"net/http"
@@ -56,6 +57,9 @@ func handleRequest(ctx requestContext) error {
 	switch ctx.r.Method {
 	case http.MethodGet:
 		return handleGet(ctx)
+
+	case http.MethodPost, http.MethodPut:
+		return handlePost(ctx)
 
 	default:
 		return errors.New("ignored request because of the http method")
@@ -112,4 +116,48 @@ func serveFolder(ctx requestContext) error {
 	}
 
 	return renderFolder(ctx.w, FolderData{Path: ctx.path, Entries: infos})
+}
+
+func handlePost(ctx requestContext) error {
+	r, err := ctx.r.MultipartReader()
+	if err != nil {
+		return err
+	}
+
+	for {
+		part, err := r.NextPart()
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+
+			return err
+		}
+
+		filename := part.FileName()
+		if filename != "" {
+			log.Printf("\tuploading %q to %q", filename, ctx.filename)
+		}
+
+		if ctx.r.Method == http.MethodPost && fileExists(filename) {
+			log.Printf("\t%q already exists!", filename)
+			return respondWithStatus(ctx.w, http.StatusConflict)
+		}
+
+		writeFile(part, filepath.Join(ctx.filename, filename))
+	}
+}
+
+func writeFile(r io.ReadCloser, filename string) error {
+	defer r.Close()
+
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	_, err = io.Copy(f, r)
+	return err
 }

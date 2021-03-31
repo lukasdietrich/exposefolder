@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	//go:embed *.html
+	//go:embed *.html *.js
 	templateFiles embed.FS
 	templates     = template.Must(template.New("").Funcs(templateFuncs).ParseFS(templateFiles, "*"))
 	templateFuncs = template.FuncMap{

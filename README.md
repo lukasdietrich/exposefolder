@@ -1,4 +1,4 @@
-# exposefolder
+# 📁 exposefolder
 
 A oneline web server for development purposes.
 
@@ -9,11 +9,11 @@ A oneline web server for development purposes.
 When I need to quickly serve a folder via http for whatever reason I usually use
 `python3 -m http.server`.
 
-Apart from developing a web application, which is a one way street from the server to the browser,
-I sometimes wished you could easily upload files without any hassle.
+Apart from serving files from the server to a browser, 
+I sometimes wished you could just as easily upload files, too.
 
-`exposefolder` serves a folder with file listings, when there is no index file present. On a listing
-you can just drag and drop file into the browser and they appear, just like magic ✨.
+`exposefolder` serves a folder, showing a list of files when there is no index file present. 
+On a listing page you can drag and drop files into the browser and they appear, just like magic ✨.
 
 ## Usage
 
